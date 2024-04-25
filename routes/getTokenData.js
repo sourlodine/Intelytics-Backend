@@ -21,12 +21,15 @@ router.get("/getTokenData", async (req, res) => {
       .map((feed) => {
         return {
           price: feed.price,
+          volume: feed.volume.h24,
           ts: feed.timestamp.getTime(),
         };
       })
       .sort((price1, price2) => price1.ts - price2.ts);
 
     if (!priceHistory.length) return res.status(200).json([]);
+
+    console.log(priceHistory);
 
     let candlePeriod = 60_000; // 1 min  default
     switch (range) {
@@ -51,6 +54,9 @@ router.get("/getTokenData", async (req, res) => {
     let cdEnd =
       Math.floor(priceHistory[priceHistory.length - 1].ts / candlePeriod) *
       candlePeriod;
+
+    console.log({ cdStart });
+    console.log({ cdEnd });
 
     let cdFeeds = [];
 
@@ -80,6 +86,7 @@ router.get("/getTokenData", async (req, res) => {
           low: lo,
           close: en,
           time: curCdStart,
+          volume: priceHistory[pIndex - 1].volume,
         });
     }
 
@@ -116,8 +123,6 @@ const findPrices = async ({ token, start, end }) => {
   }
 
   const prices = await Token.find(query);
-
-  console.log(prices);
 
   return prices;
 };
