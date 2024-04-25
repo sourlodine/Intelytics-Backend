@@ -11,7 +11,11 @@ const express = require("express");
 const app = express();
 app.use(
   cors({
-    origin: ["https://www.intelytics.net", "http://localhost:3000"],
+    origin: [
+      "https://www.intelytics.net",
+      "http://localhost:3000",
+      "http://localhost:3001",
+    ],
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
 );
