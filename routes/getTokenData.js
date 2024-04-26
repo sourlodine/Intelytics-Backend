@@ -56,9 +56,6 @@ router.get("/getTokenData", async (req, res) => {
       Math.floor(priceHistory[priceHistory.length - 1].ts / candlePeriod) *
       candlePeriod;
 
-    console.log({ cdStart });
-    console.log({ cdEnd });
-
     let cdFeeds = [];
 
     let pIndex = 0;
@@ -127,74 +124,5 @@ const findPrices = async ({ token, start, end }) => {
 
   return prices;
 };
-
-// router.get("/getTokenData", async (req, res) => {
-//   const { token, startDate, endDate, range } = req.query;
-//   try {
-//     console.info(
-//       `fetching chart data for token: ${token}, startDate: ${startDate}, endDate: ${endDate}, range: ${range}`
-//     );
-//     const volumeType = range <= 5 ? "m5" : "h1";
-//     const intervalInMilliseconds = range * 60 * 1000;
-
-//     // Define the aggregation pipeline
-//     const pipeline = [
-//       {
-//         $match: {
-//           token,
-//           timestamp: {
-//             $gte: new Date(startDate || 0),
-//             $lte: new Date(endDate || 9999999999999),
-//           },
-//         },
-//       },
-//       {
-//         $project: {
-//           _id: 0,
-//           open: "$price",
-//           high: "$price",
-//           low: "$price",
-//           close: "$price",
-//           volume: `$volume.${volumeType}`,
-//           timestamp: 1,
-//         },
-//       },
-//       {
-//         $group: {
-//           _id: {
-//             $toDate: {
-//               $subtract: [
-//                 { $toLong: { $toDate: "$timestamp" } },
-//                 {
-//                   $mod: [
-//                     { $toLong: { $toDate: "$timestamp" } },
-//                     intervalInMilliseconds,
-//                   ],
-//                 },
-//               ],
-//             },
-//           },
-//           open: { $first: "$open" },
-//           high: { $max: "$high" },
-//           low: { $min: "$low" },
-//           close: { $last: "$close" },
-//           volume: { $sum: "$volume" },
-//         },
-//       },
-//       {
-//         $sort: { _id: 1 }, // Sort by timestamp
-//       },
-//     ];
-
-//     // Execute the aggregation pipeline
-//     const result = await Token.aggregate(pipeline);
-
-//     // Send the result as JSON
-//     res.json(result);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
 
 module.exports = router;
